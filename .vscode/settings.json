@@ -1,0 +1,102 @@
+{
+    "code-runner.executorMap": {
+      "cpp": "g++ $fullFileName Vector3.cpp Ray.cpp -o $dir\"$fileNameWithoutExt\"\".out\" -W -Wall -O2 -std=c++17 && $dir\"$fileNameWithoutExt\"\".out\"",
+      // 其中 $fullFileName 是绝对路径，是主文件
+      /* ------ 编译、运行多个cpp文件 ------ */
+      // "cpp": "g++ $fullFileName <file_to_link> -o $dir\"$fileNameWithoutExt\"\".out\" -W -Wall -O2 -std=c++17 && $dir\"$fileNameWithoutExt\"\".out\""
+      /* ------ 编译c文件 ------ */
+      "c": "gcc $fullFileName -o $dir\"$fileNameWithoutExt\"\".out\" -W -Wall -O2 -std=c17 && $dir\"$fileNameWithoutExt\"\".out\"",
+      // "c": "gcc $fullFileName <file_to_link> -o $dir\"$fileNameWithoutExt\"\".out\" -W -Wall -O2 -std=c17 && $dir\"$fileNameWithoutExt\"\".out\"",
+    },
+    // Whether to clear previous output before each run (default is false):
+    "code-runner.clearPreviousOutput": true,
+    // Whether to save all files before running (default is false):
+    "code-runner.saveAllFilesBeforeRun": false,
+    // Whether to save the current file before running (default is false):
+    "code-runner.saveFileBeforeRun": true,
+    // Whether to show extra execution message like [Running] ... and [Done] ... (default is true):
+    "code-runner.showExecutionMessage": true, // cannot see that message is you set "code-runner.runInTerminal" to true
+    // Whether to run code in Integrated Terminal (only support to run whole file in Integrated Terminal, neither untitled file nor code snippet) (default is false):
+    "code-runner.runInTerminal": true, // cannot input data when setting to false
+    // Whether to preserve focus on code editor after code run is triggered (default is true, the code editor will keep focus; when it is false, Terminal or Output Channel will take focus):
+    "code-runner.preserveFocus": false,
+    // Whether to ignore selection to always run entire file. (Default is false)
+    "code-runner.ignoreSelection": true,
+    "files.associations": {
+      "__locale": "cpp",
+      "ios": "cpp",
+      "__bit_reference": "cpp",
+      "__config": "cpp",
+      "__debug": "cpp",
+      "__errc": "cpp",
+      "__functional_base": "cpp",
+      "__hash_table": "cpp",
+      "__mutex_base": "cpp",
+      "__node_handle": "cpp",
+      "__nullptr": "cpp",
+      "__split_buffer": "cpp",
+      "__string": "cpp",
+      "__threading_support": "cpp",
+      "__tuple": "cpp",
+      "algorithm": "cpp",
+      "array": "cpp",
+      "atomic": "cpp",
+      "bit": "cpp",
+      "bitset": "cpp",
+      "cctype": "cpp",
+      "chrono": "cpp",
+      "clocale": "cpp",
+      "cmath": "cpp",
+      "compare": "cpp",
+      "complex": "cpp",
+      "concepts": "cpp",
+      "condition_variable": "cpp",
+      "cstdarg": "cpp",
+      "cstddef": "cpp",
+      "cstdint": "cpp",
+      "cstdio": "cpp",
+      "cstdlib": "cpp",
+      "cstring": "cpp",
+      "ctime": "cpp",
+      "cwchar": "cpp",
+      "cwctype": "cpp",
+      "deque": "cpp",
+      "exception": "cpp",
+      "functional": "cpp",
+      "initializer_list": "cpp",
+      "iosfwd": "cpp",
+      "iostream": "cpp",
+      "istream": "cpp",
+      "iterator": "cpp",
+      "limits": "cpp",
+      "locale": "cpp",
+      "memory": "cpp",
+      "mutex": "cpp",
+      "new": "cpp",
+      "numbers": "cpp",
+      "numeric": "cpp",
+      "optional": "cpp",
+      "ostream": "cpp",
+      "queue": "cpp",
+      "random": "cpp",
+      "ratio": "cpp",
+      "semaphore": "cpp",
+      "sstream": "cpp",
+      "stdexcept": "cpp",
+      "streambuf": "cpp",
+      "string": "cpp",
+      "string_view": "cpp",
+      "system_error": "cpp",
+      "thread": "cpp",
+      "tuple": "cpp",
+      "type_traits": "cpp",
+      "typeinfo": "cpp",
+      "unordered_map": "cpp",
+      "utility": "cpp",
+      "vector": "cpp",
+      "*.tcc": "cpp",
+      "memory_resource": "cpp",
+      "stop_token": "cpp"
+    },
+    // --------------------------------------------------------------------------------------
+  }

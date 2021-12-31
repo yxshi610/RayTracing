@@ -14,6 +14,4 @@ public:
     Vector3 at(double t);
 };
 
-Vector3 ray_color(Ray r);
-
 #endif

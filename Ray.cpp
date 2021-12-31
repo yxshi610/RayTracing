@@ -17,7 +17,3 @@ Vector3 Ray::direction() {
 Vector3 Ray::at(double t) {
     return _origin + t * _direction;
 }
-
-Vector3 ray_color(Ray r) {
-
-}
