@@ -1,4 +1,4 @@
-#include "Vector3.h"
+#include "main.h"
 #include <cmath>
 
 // vec constructor
@@ -24,6 +24,22 @@ double Vector3::Dot(Vector3 x, Vector3 y) {
     return x._x * y._x + x._y * y._y + x._z * y._z;
 }
 
+Vector3 Vector3::random() {
+    return Vector3(random_double(), random_double(), random_double());
+}
+
+Vector3 Vector3::random(double min, double max) {
+    return Vector3(random_double(min, max), random_double(min, max), random_double(min, max));
+}
+
+Vector3 Vector3::random_in_unit_sphere() {
+    while (true) {
+        auto p = Vector3::random(-1, 1);
+        if (p.length() * p.length() >= 1) continue;
+        return p;
+    }
+}
+
 double Vector3::length() {
     return std::sqrt(_x * _x + _y * _y + _z * _z);
 }
@@ -32,11 +48,4 @@ Vector3 Vector3::unit() {
     Vector3 res = Vector3(_x, _y, _z);
     double length = res.length();
     return res / length;
-}
-
-
-void write_color(std::ostream &out, Vector3 pixel_color) {
-    out << static_cast<int>(255.999 * pixel_color.x()) << ' '
-        << static_cast<int>(255.999 * pixel_color.y()) << ' '
-        << static_cast<int>(255.999 * pixel_color.z()) << '\n';
 }

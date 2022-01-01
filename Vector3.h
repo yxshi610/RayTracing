@@ -18,9 +18,15 @@ public:
     double z();
 
     static double Dot(Vector3 x, Vector3 y);
+    static Vector3 random();
+    static Vector3 random(double min, double max);
+
+    static Vector3 random_in_unit_sphere();
 
     double length();
     Vector3 unit();
+
+    Vector3 operator-() const { return Vector3(-_x, -_y, -_z); }
 
     Vector3 operator + (Vector3 second) {
         Vector3 res;
@@ -52,7 +58,5 @@ public:
         return res;
     }
 };
-
-void write_color(std::ostream &out, Vector3 pixel_color);
 
 #endif

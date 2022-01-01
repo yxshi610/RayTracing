@@ -15,7 +15,7 @@ double Sphere::radius() {
     return _radius;
 }
 
-bool Sphere::hit(Ray r, double t_min, double t_max, hit_record& rec) const {
+bool Sphere::hit(Ray r, double t_min, double t_max, hit_record& rec) {
     Vector3 oc = r.origin() - _center;
     auto a = Vector3::Dot(r.direction(), r.direction());
     auto half_b = Vector3::Dot(oc, r.direction());
@@ -34,7 +34,8 @@ bool Sphere::hit(Ray r, double t_min, double t_max, hit_record& rec) const {
 
     rec.t = root;
     rec.P = r.at(rec.t);
-    rec.N = (rec.P - _center) / _radius;
+    Vector3 outward_normal = (rec.P - _center) / _radius;
+    rec.set_face_normal(r, outward_normal);
 
     return true;
 }
