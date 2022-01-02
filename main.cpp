@@ -1,15 +1,17 @@
 #include "main.h"
 
-#include "Sphere.h"
-#include "hittable_list.h"
 #include "camera.h"
+#include "./hittable/hittable_list.h"
+#include "./material/material.h"
+#include "./hittable/Sphere.h"
+
 #include <iostream>
 
 double hit_sphere(Vector3 center, double radius, Ray r) {
     Vector3 oc = r.origin() - center;
-    auto a = Vector3::Dot(r.direction(), r.direction());
-    auto half_b = Vector3::Dot(oc, r.direction());
-    auto c = Vector3::Dot(oc, oc) - radius*radius;
+    auto a = dot(r.direction(), r.direction());
+    auto half_b = dot(oc, r.direction());
+    auto c = dot(oc, oc) - radius*radius;
     auto discriminant = half_b*half_b - a*c;
     if (discriminant < 0) {
         return -1.0;
@@ -24,8 +26,11 @@ Vector3 ray_color(Ray r, hittable_list world, int depth) {
     if (depth <= 0) return Vector3(0, 0, 0);
 
     if (world.hit(r, 0.001, infinity, rec)) {
-        Vector3 target = rec.P + rec.N + Vector3::random_in_unit_sphere();
-        return 0.5 * ray_color(Ray(rec.P, target - rec.P), world, depth - 1);
+        Ray scattered;
+        Vector3 attenuation;
+        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))
+            return attenuation * ray_color(scattered, world, depth-1);
+        return Vector3(0,0,0);
     }
     Vector3 unit_direction = r.direction().unit();
     auto t = 0.5*(unit_direction.y() + 1.0);
@@ -59,8 +64,15 @@ int main() {
 
     // World
     hittable_list world;
-    world.add(std::make_shared<Sphere>(Vector3(0,0,-1), 0.5));
-    world.add(std::make_shared<Sphere>(Vector3(0,-100.5,-1), 100));
+    auto material_ground = std::make_shared<lambertian>(Vector3(0.8, 0.8, 0.0));
+    auto material_center = std::make_shared<lambertian>(Vector3(0.7, 0.3, 0.3));
+    auto material_left   = std::make_shared<metal>(Vector3(0.8, 0.8, 0.8), 0);
+    auto material_right  = std::make_shared<metal>(Vector3(0.8, 0.6, 0.2), 1.0);
+
+    world.add(std::make_shared<Sphere>(Vector3( 0.0, -100.5, -1.0), 100.0, material_ground));
+    world.add(std::make_shared<Sphere>(Vector3( 0.0,    0.0, -1.0),   0.5, material_center));
+    world.add(std::make_shared<Sphere>(Vector3(-1.0,    0.0, -1.0),   0.5, material_left));
+    world.add(std::make_shared<Sphere>(Vector3( 1.0,    0.0, -1.0),   0.5, material_right));
 
     // Camera
 

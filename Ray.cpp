@@ -1,5 +1,7 @@
 #include "main.h"
 
+Ray::Ray() {}
+
 Ray::Ray(Vector3 origin, Vector3 direction) {
     _origin = origin;
     _direction = direction;

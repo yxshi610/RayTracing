@@ -20,10 +20,6 @@ double Vector3::x() { return _x; }
 double Vector3::y() { return _y; }
 double Vector3::z() { return _z; }
 
-double Vector3::Dot(Vector3 x, Vector3 y) {
-    return x._x * y._x + x._y * y._y + x._z * y._z;
-}
-
 Vector3 Vector3::random() {
     return Vector3(random_double(), random_double(), random_double());
 }
@@ -39,6 +35,18 @@ Vector3 Vector3::random_in_unit_sphere() {
         return p;
     }
 }
+
+Vector3 Vector3::random_unit_sphere() {
+    // on sphere S
+    return Vector3::random_in_unit_sphere().unit();
+}
+
+bool Vector3::near_zero() {
+    // Return true if the vector is close to zero in all dimensions.
+    const auto s = 1e-8;
+    return (fabs(_x) < s) && (fabs(_y) < s) && (fabs(_z) < s);
+}
+
 
 double Vector3::length() {
     return std::sqrt(_x * _x + _y * _y + _z * _z);

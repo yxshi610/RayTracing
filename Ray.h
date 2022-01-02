@@ -9,6 +9,7 @@ private:
     Vector3 _direction;
 
 public:
+    Ray();
     Ray(Vector3 origin, Vector3 direction);
     Vector3 origin();
     Vector3 direction();
