@@ -49,11 +49,22 @@ bool Vector3::near_zero() {
 
 
 double Vector3::length() {
-    return std::sqrt(_x * _x + _y * _y + _z * _z);
+    return std::sqrt(length_squared());
+}
+
+double Vector3::length_squared() {
+    return _x * _x + _y * _y + _z * _z;
 }
 
 Vector3 Vector3::unit() {
     Vector3 res = Vector3(_x, _y, _z);
     double length = res.length();
     return res / length;
+}
+
+Vector3 refract(Vector3 uv, Vector3 n, double etai_over_etat) {
+    auto cos_theta = fmin(dot(-uv, n), 1.0);
+    Vector3 r_out_perp =  etai_over_etat * (uv + cos_theta*n);
+    Vector3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.length_squared())) * n;
+    return r_out_perp + r_out_parallel;
 }

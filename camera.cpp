@@ -1,17 +1,26 @@
 #include "camera.h"
 
-camera::camera() {
-    auto aspect_ratio = 16.0 / 9.0;
-    auto viewport_height = 2.0;
+camera::camera(Vector3 lookfrom, Vector3 lookat, Vector3 vup, double vfov, double aspect_ratio, double aperture, double focus_dist) {
+    auto theta = degrees_to_radians(vfov);
+    auto h = tan(theta/2);
+    auto viewport_height = 2.0 * h;
     auto viewport_width = aspect_ratio * viewport_height;
-    auto focal_length = 1.0;
 
-    _origin = Vector3(0, 0, 0);
-    _horizontal = Vector3(viewport_width, 0.0, 0.0);
-    _vertical = Vector3(0.0, viewport_height, 0.0);
-    _lower_left_corner = _origin - _horizontal/2 - _vertical/2 - Vector3(0, 0, focal_length);
+    _w = (lookfrom - lookat).unit();
+    _u = cross(vup, _w).unit();
+    _v = cross(_w, _u);
+
+    _origin = lookfrom;
+    _horizontal = focus_dist * viewport_width * _u;
+    _vertical = focus_dist * viewport_height * _v;
+    _lower_left_corner = _origin - _horizontal/2 - _vertical/2 - focus_dist * _w;
+
+    _lens_radius = aperture / 2;
 }
 
-Ray camera::get_ray(double u, double v) {
-    return Ray(_origin, _lower_left_corner + u * _horizontal + v * _vertical - _origin);
+Ray camera::get_ray(double s, double t) {
+    Vector3 rd = _lens_radius * random_in_unit_disk();
+    Vector3 offset = _u * rd.x() + _v * rd.y();
+
+    return Ray(_origin + offset, _lower_left_corner + s * _horizontal + t * _vertical - _origin - offset);
 }

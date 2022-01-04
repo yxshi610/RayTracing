@@ -1,6 +1,6 @@
 {
     "code-runner.executorMap": {
-      "cpp": "g++ $fullFileName Vector3.cpp Ray.cpp ./hittable/Sphere.cpp ./hittable/hittable.cpp ./hittable/hittable_list.cpp camera.cpp -o $dir\"$fileNameWithoutExt\"\".out\" -W -Wall -O2 -std=c++17 && $dir\"$fileNameWithoutExt\"\".out\"",
+      "cpp": "g++ $fullFileName Vector3.cpp Ray.cpp ./hittable/Sphere.cpp ./hittable/hittable.cpp ./hittable/hittable_list.cpp camera.cpp -o $dir\"$fileNameWithoutExt\"\".out\" -W -Wall -O2 -std=c++17 && $dir\"$fileNameWithoutExt\"\".out\" > try.ppm",
       // 其中 $fullFileName 是绝对路径，是主文件
       /* ------ 编译、运行多个cpp文件 ------ */
       // "cpp": "g++ $fullFileName <file_to_link> -o $dir\"$fileNameWithoutExt\"\".out\" -W -Wall -O2 -std=c++17 && $dir\"$fileNameWithoutExt\"\".out\""

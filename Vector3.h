@@ -26,6 +26,8 @@ public:
     
     bool near_zero();
     double length();
+    double length_squared();
+
     Vector3 unit();
 
     Vector3 operator-() const { return Vector3(-_x, -_y, -_z); }
@@ -91,8 +93,18 @@ inline Vector3 cross(Vector3 u, Vector3 v) {
                 u.x() * v.y() - u.y() * v.x());
 }
 
+inline Vector3 random_in_unit_disk() {
+    while (true) {
+        auto p = Vector3(random_double(-1,1), random_double(-1,1), 0);
+        if (p.length_squared() >= 1) continue;
+        return p;
+    }
+}
+
 inline Vector3 reflect(Vector3 v, Vector3 n) {
     return v - 2 * dot(v,n) * n;
 }
+
+Vector3 refract(Vector3 uv, Vector3 n, double etai_over_etat);
 
 #endif
