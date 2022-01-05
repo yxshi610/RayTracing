@@ -2,11 +2,15 @@
 
 hittable_list::hittable_list() {}
 
-hittable_list::hittable_list(std::shared_ptr<Hittable> object) {
+hittable_list::hittable_list(std::shared_ptr<hittable> object) {
     add(object);
 }
 
-void hittable_list::add(std::shared_ptr<Hittable> object) {
+std::vector<std::shared_ptr<hittable>> hittable_list::objects() {
+    return _objects;
+}
+
+void hittable_list::add(std::shared_ptr<hittable> object) {
     _objects.push_back(object);
 }
 
@@ -28,4 +32,19 @@ bool hittable_list::hit(Ray r, double t_min, double t_max, hit_record& rec) {
     }
 
     return hit_anything;
+}
+
+bool hittable_list::bounding_box(double time0, double time1, aabb& output_box) {
+    if (_objects.empty()) return false;
+
+    aabb temp_box;
+    bool first_box = true;
+
+    for (const auto& object : _objects) {
+        if (!object->bounding_box(time0, time1, temp_box)) return false;
+        output_box = first_box ? temp_box : surrounding_box(output_box, temp_box);
+        first_box = false;
+    }
+
+    return true;
 }

@@ -11,9 +11,10 @@ private:
     Vector3 _vertical;
     Vector3 _u, _v, _w;
     double _lens_radius;
+    double _time0, _time1;
 
 public:
-    camera(Vector3 lookfrom, Vector3 lookat, Vector3 vup, double vfov, double aspect_ratio, double aperture, double focus_dist);
+    camera(Vector3 lookfrom, Vector3 lookat, Vector3 vup, double vfov, double aspect_ratio, double aperture, double focus_dist, double time0 = 0, double time1 = 0);
     Ray get_ray(double s, double t);
 };
 

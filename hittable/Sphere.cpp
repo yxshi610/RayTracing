@@ -1,21 +1,21 @@
-#include "Sphere.h"
+#include "sphere.h"
 #include <cmath>
 
-Sphere::Sphere(Vector3 center, double radius, std::shared_ptr<material> mat_ptr){
+sphere::sphere(Vector3 center, double radius, std::shared_ptr<material> mat_ptr){
     _center = center;
     _radius = radius;
     _mat_ptr = mat_ptr;
 };
 
-Vector3 Sphere::center() {
+Vector3 sphere::center() {
     return _center;
 };
 
-double Sphere::radius() {
+double sphere::radius() {
     return _radius;
 }
 
-bool Sphere::hit(Ray r, double t_min, double t_max, hit_record& rec) {
+bool sphere::hit(Ray r, double t_min, double t_max, hit_record& rec) {
     Vector3 oc = r.origin() - _center;
     auto a = dot(r.direction(), r.direction());
     auto half_b = dot(oc, r.direction());
@@ -36,8 +36,23 @@ bool Sphere::hit(Ray r, double t_min, double t_max, hit_record& rec) {
     rec.P = r.at(rec.t);
     Vector3 outward_normal = (rec.P - _center) / _radius;
     rec.set_face_normal(r, outward_normal);
+    get_sphere_uv(outward_normal, rec.u, rec.v);
     rec.mat_ptr = _mat_ptr;
 
     return true;
 }
 
+bool sphere::bounding_box(double time0, double time1, aabb& output_box) {
+    output_box = aabb(
+        _center - Vector3(_radius, _radius, _radius),
+        _center + Vector3(_radius, _radius, _radius));
+    return true;
+}
+
+void sphere::get_sphere_uv(Vector3 P, double& u, double& v) {
+    auto theta = acos(-P.y());
+    auto phi = atan2(-P.z(), P.x()) + pi;
+
+    u = phi / (2*pi);
+    v = theta / pi;
+}

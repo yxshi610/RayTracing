@@ -2,6 +2,7 @@
 #define MATERIAL_H
 
 #include "../main.h"
+#include "../texture/solid_color.h"
 
 struct hit_record;
 
@@ -14,10 +15,11 @@ public:
 
 class lambertian: public material {
 private:
-    Vector3 albedo;
+    std::shared_ptr<texture> albedo;
 
 public:
-    lambertian(Vector3 a) : albedo(a) {}
+    lambertian(Vector3 a) : albedo(std::make_shared<solid_color>(a)) {}
+    lambertian(std::shared_ptr<texture> a) : albedo(a) {}
 
     virtual bool scatter(
         Ray r_in, const hit_record& rec, Vector3& attenuation, Ray& scattered
@@ -28,8 +30,8 @@ public:
         if (scatter_direction.near_zero())
             scatter_direction = rec.N;
 
-        scattered = Ray(rec.P, scatter_direction);
-        attenuation = albedo;
+        scattered = Ray(rec.P, scatter_direction, r_in.time());
+        attenuation = albedo->value(rec.u, rec.v, rec.P);
         return true;
     }
 };
@@ -46,7 +48,7 @@ public:
         Ray r_in, const hit_record& rec, Vector3& attenuation, Ray& scattered
     ) const override {
         Vector3 reflected = reflect(r_in.direction().unit(), rec.N);
-        scattered = Ray(rec.P, reflected + _fuzz * Vector3::random_in_unit_sphere());
+        scattered = Ray(rec.P, reflected + _fuzz * Vector3::random_in_unit_sphere(), r_in.time());
         attenuation = _albedo;
         return (dot(scattered.direction(), rec.N) > 0);
     }
@@ -77,7 +79,7 @@ class dielectric : public material {
             else
                 direction = refract(unit_direction, rec.N, refraction_ratio);
 
-            scattered = Ray(rec.P, direction);
+            scattered = Ray(rec.P, direction, r_in.time());
             return true;
         }
     
