@@ -6,6 +6,7 @@
 #include "./hittable/sphere.h"
 #include "./hittable/moving_sphere.h"
 #include "./texture/checker_texture.h"
+#include "./texture/noise_texture.h"
 
 #include <iostream>
 
@@ -94,6 +95,16 @@ hittable_list random_scene() {
     return world;
 }
 
+hittable_list two_perlin_spheres() {
+    hittable_list objects;
+
+    auto pertext = std::make_shared<noise_texture>();
+    objects.add(std::make_shared<sphere>(Vector3(0,-1000,0), 1000, std::make_shared<lambertian>(pertext)));
+    objects.add(std::make_shared<sphere>(Vector3(0, 2, 0), 2, std::make_shared<lambertian>(pertext)));
+
+    return objects;
+}
+
 int main() {
   // Image
     const auto aspect_ratio = 16.0 / 9.0;
@@ -103,7 +114,17 @@ int main() {
     const int max_depth = 50;
 
     // World
-    auto world = random_scene();
+    hittable_list world;
+    switch (0) {
+        case 1:
+            break;
+        case 2:
+            break;
+        default:
+        case 3:
+            world = two_perlin_spheres();
+            break;
+    }
 
     // Camera
     Vector3 lookfrom(13,2,3);
