@@ -7,10 +7,15 @@
 struct hit_record;
 
 class material {
-public:
-    virtual bool scatter(
-            Ray r_in, const hit_record& rec, Vector3& attenuation, Ray& scattered
-        ) const = 0;
+    public:
+        // for non-emitting, return black.
+        virtual Vector3 emitted(double u, double v, Vector3 p) {
+            return Vector3(0, 0, 0);
+        }
+        
+        virtual bool scatter(
+                Ray r_in, hit_record& rec, Vector3& attenuation, Ray& scattered
+            ) = 0;
 };
 
 class lambertian: public material {
@@ -22,8 +27,8 @@ public:
     lambertian(std::shared_ptr<texture> a) : albedo(a) {}
 
     virtual bool scatter(
-        Ray r_in, const hit_record& rec, Vector3& attenuation, Ray& scattered
-    ) const override {
+        Ray r_in, hit_record& rec, Vector3& attenuation, Ray& scattered
+    ) override {
         auto scatter_direction = rec.N + Vector3::random_unit_sphere();
 
         // Catch degenerate scatter direction
@@ -45,8 +50,8 @@ public:
     metal(Vector3 albedo, double fuzz) : _albedo(albedo), _fuzz(fuzz < 1 ? fuzz : 1) {}
 
     virtual bool scatter(
-        Ray r_in, const hit_record& rec, Vector3& attenuation, Ray& scattered
-    ) const override {
+        Ray r_in, hit_record& rec, Vector3& attenuation, Ray& scattered
+    ) override {
         Vector3 reflected = reflect(r_in.direction().unit(), rec.N);
         scattered = Ray(rec.P, reflected + _fuzz * Vector3::random_in_unit_sphere(), r_in.time());
         attenuation = _albedo;
@@ -62,8 +67,8 @@ class dielectric : public material {
         dielectric(double index_of_refraction) : ir(index_of_refraction) {}
 
         virtual bool scatter(
-            Ray r_in, const hit_record& rec, Vector3& attenuation, Ray& scattered
-        ) const override {
+            Ray r_in, hit_record& rec, Vector3& attenuation, Ray& scattered
+        ) override {
             attenuation = Vector3(1.0, 1.0, 1.0);
             double refraction_ratio = rec.front_face ? (1.0/ir) : ir;
 

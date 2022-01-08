@@ -8,6 +8,8 @@
 #include "./texture/checker_texture.h"
 #include "./texture/noise_texture.h"
 #include "./texture/image_texture.h"
+#include "./material/diffuse_light.h"
+#include "./hittable/aa_rectangle.h"
 
 #include <iostream>
 
@@ -24,21 +26,21 @@ double hit_sphere(Vector3 center, double radius, Ray r) {
     }
 }
 
-Vector3 ray_color(Ray r, hittable_list world, int depth) {
+Vector3 ray_color(Ray r, Vector3 background, hittable_list world, int depth) {
     hit_record rec;
 
     if (depth <= 0) return Vector3(0, 0, 0);
 
-    if (world.hit(r, 0.001, infinity, rec)) {
+    if (!world.hit(r, 0.001, infinity, rec)) return background;
+
         Ray scattered;
         Vector3 attenuation;
-        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))
-            return attenuation * ray_color(scattered, world, depth-1);
-        return Vector3(0,0,0);
-    }
-    Vector3 unit_direction = r.direction().unit();
-    auto t = 0.5*(unit_direction.y() + 1.0);
-    return (1.0-t)*Vector3(1.0, 1.0, 1.0) + t*Vector3(0.5, 0.7, 1.0);
+        Vector3 emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.P);
+
+        if (!rec.mat_ptr->scatter(r, rec, attenuation, scattered)) return emitted;
+        
+        return emitted + attenuation * ray_color(scattered, background, world, depth-1);
+
 }
 
 void write_color(std::ostream &out, Vector3 pixel_color, int samples_per_pixel) {
@@ -114,38 +116,93 @@ hittable_list earth() {
     return hittable_list(globe);
 }
 
+hittable_list simple_light() {
+    hittable_list objects;
+
+    auto pertext = std::make_shared<noise_texture>(4);
+    objects.add(std::make_shared<sphere>(Vector3(0,-1000,0), 1000, std::make_shared<lambertian>(pertext)));
+    objects.add(std::make_shared<sphere>(Vector3(0,2,0), 2, std::make_shared<lambertian>(pertext)));
+
+    auto difflight = std::make_shared<DiffuseLight>(Vector3(4,4,4));
+    objects.add(std::make_shared<XYRectangle>(3, 5, 1, 3, -2, difflight));
+
+    return objects;
+}
+
+hittable_list cornell_box() {
+    hittable_list objects;
+
+    auto red   = std::make_shared<lambertian>(Vector3(.65, .05, .05));
+    auto white = std::make_shared<lambertian>(Vector3(.73, .73, .73));
+    auto green = std::make_shared<lambertian>(Vector3(.12, .45, .15));
+    auto light = std::make_shared<DiffuseLight>(Vector3(15, 15, 15));
+
+    objects.add(std::make_shared<YZRectangle>(0, 555, 0, 555, 555, green));
+    objects.add(std::make_shared<YZRectangle>(0, 555, 0, 555, 0, red));
+    objects.add(std::make_shared<XZRectangle>(213, 343, 227, 332, 554, light));
+    objects.add(std::make_shared<XZRectangle>(0, 555, 0, 555, 0, white));
+    objects.add(std::make_shared<XZRectangle>(0, 555, 0, 555, 555, white));
+    objects.add(std::make_shared<XYRectangle>(0, 555, 0, 555, 555, white));
+
+    return objects;
+}
+
 int main() {
-  // Image
-    const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 400;
-    const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int samples_per_pixel = 300;
-    const int max_depth = 50;
+    // Image
+    auto aspect_ratio = 16.0 / 9.0;
+    int image_width = 400;
+    int samples_per_pixel = 100;
+    int max_depth = 50;
+
+    // Camera1
+    Vector3 lookfrom;
+    Vector3 lookat;
+    auto vfov = 40.0;
+    auto aperture = 0.0;
 
     // World
+    Vector3 background(0, 0, 0);
+
     hittable_list world;
+
     switch (0) {
         case 1:
             break;
         case 2:
             break;
         case 3:
+            background = Vector3(0.70, 0.80, 1.00);
             world = two_perlin_spheres();
             break;
-        default:
         case 4:
+            background = Vector3(0.70, 0.80, 1.00);
             world = earth();
+            break;
+        case 5:
+            world = simple_light();
+            samples_per_pixel = 400;
+            background = Vector3(0.0, 0.0, 0.0);
+            break;
+        default:
+        case 6 :
+            world = cornell_box();
+            aspect_ratio = 1.0;
+            image_width = 600;
+            samples_per_pixel = 200;
+            background = Vector3(0,0,0);
+            lookfrom = Vector3(278, 278, -800);
+            lookat = Vector3(278, 278, 0);
+            vfov = 40.0;
             break;
     }
 
     // Camera
-    Vector3 lookfrom(13,2,3);
-    Vector3 lookat(0,0,0);
-    Vector3 vup(0,1,0);
-    auto dist_to_focus = 10.0;
-    auto aperture = 0.1;
 
-    camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
+    const Vector3 vup(0,1,0);
+    const auto dist_to_focus = 10.0;
+    const int image_height = static_cast<int>(image_width / aspect_ratio);
+
+    camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 
     // Render
     std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
@@ -158,7 +215,7 @@ int main() {
                 auto u = (i + random_double()) / (image_width-1);
                 auto v = (j + random_double()) / (image_height-1);
                 Ray r = cam.get_ray(u, v);
-                pixel_color = pixel_color + ray_color(r, world, max_depth);
+                pixel_color = pixel_color + ray_color(r, background, world, max_depth);
             }
             write_color(std::cout, pixel_color, samples_per_pixel);
         }
