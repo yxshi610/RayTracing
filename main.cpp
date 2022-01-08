@@ -7,6 +7,7 @@
 #include "./hittable/moving_sphere.h"
 #include "./texture/checker_texture.h"
 #include "./texture/noise_texture.h"
+#include "./texture/image_texture.h"
 
 #include <iostream>
 
@@ -98,11 +99,19 @@ hittable_list random_scene() {
 hittable_list two_perlin_spheres() {
     hittable_list objects;
 
-    auto pertext = std::make_shared<noise_texture>();
+    auto pertext = std::make_shared<noise_texture>(4);
     objects.add(std::make_shared<sphere>(Vector3(0,-1000,0), 1000, std::make_shared<lambertian>(pertext)));
     objects.add(std::make_shared<sphere>(Vector3(0, 2, 0), 2, std::make_shared<lambertian>(pertext)));
 
     return objects;
+}
+
+hittable_list earth() {
+    auto earth_texture = std::make_shared<ImageTexture>("bella.jpg");
+    auto earth_surface = std::make_shared<lambertian>(earth_texture);
+    auto globe = std::make_shared<sphere>(Vector3(0,0,0), 2, earth_surface);
+
+    return hittable_list(globe);
 }
 
 int main() {
@@ -120,9 +129,12 @@ int main() {
             break;
         case 2:
             break;
-        default:
         case 3:
             world = two_perlin_spheres();
+            break;
+        default:
+        case 4:
+            world = earth();
             break;
     }
 
