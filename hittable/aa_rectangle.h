@@ -35,7 +35,7 @@ class XZRectangle : public hittable {
         
         virtual bool hit(Ray r, double t_min, double t_max, hit_record& rec) override;
         virtual bool bounding_box(double time0, double time1, aabb& output_box) override {
-            // The bounding box must have non-zero width in each dimension, so pad the Z
+            // The bounding box must have non-zero width in each dimension, so pad the Y
             // dimension a small amount.
             output_box = aabb(Vector3(_x0, _z0, _k - 0.0001), Vector3(_x1, _z1, _k + 0.0001));
             return true;
@@ -54,7 +54,7 @@ class YZRectangle : public hittable {
         
         virtual bool hit(Ray r, double t_min, double t_max, hit_record& rec) override;
         virtual bool bounding_box(double time0, double time1, aabb& output_box) override {
-            // The bounding box must have non-zero width in each dimension, so pad the Z
+            // The bounding box must have non-zero width in each dimension, so pad the X
             // dimension a small amount.
             output_box = aabb(Vector3(_y0, _z0, _k - 0.0001), Vector3(_y1, _z1, _k + 0.0001));
             return true;

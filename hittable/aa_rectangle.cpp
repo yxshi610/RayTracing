@@ -14,7 +14,7 @@ bool XYRectangle::hit(Ray r, double t_min, double t_max, hit_record& rec) {
     auto outward_normal = Vector3(0, 0, 1);
     rec.set_face_normal(r, outward_normal);
     rec.mat_ptr = _material;
-    rec.P = r.at(t);
+    rec.point = r.at(t);
     return true;
 }
 
@@ -32,7 +32,7 @@ bool XZRectangle::hit(Ray r, double t_min, double t_max, hit_record& rec) {
     auto outward_normal = Vector3(0, 0, 1);
     rec.set_face_normal(r, outward_normal);
     rec.mat_ptr = _material;
-    rec.P = r.at(t);
+    rec.point = r.at(t);
     return true;
 }
 
@@ -50,6 +50,6 @@ bool YZRectangle::hit(Ray r, double t_min, double t_max, hit_record& rec) {
     auto outward_normal = Vector3(0, 0, 1);
     rec.set_face_normal(r, outward_normal);
     rec.mat_ptr = _material;
-    rec.P = r.at(t);
+    rec.point = r.at(t);
     return true;
 }

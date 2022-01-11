@@ -33,8 +33,8 @@ bool moving_sphere::hit(Ray r, double t_min, double t_max, hit_record &rec) {
     }
 
     rec.t = root;
-    rec.P = r.at(rec.t);
-    auto outward_normal = (rec.P - center(r.time())) / _radius;
+    rec.point = r.at(rec.t);
+    auto outward_normal = (rec.point - center(r.time())) / _radius;
     rec.set_face_normal(r, outward_normal);
     rec.mat_ptr = _mat_ptr;
 

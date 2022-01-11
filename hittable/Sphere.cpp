@@ -33,8 +33,8 @@ bool sphere::hit(Ray r, double t_min, double t_max, hit_record& rec) {
     }
 
     rec.t = root;
-    rec.P = r.at(rec.t);
-    Vector3 outward_normal = (rec.P - _center) / _radius;
+    rec.point = r.at(rec.t);
+    Vector3 outward_normal = (rec.point - _center) / _radius;
     rec.set_face_normal(r, outward_normal);
     get_sphere_uv(outward_normal, rec.u, rec.v);
     rec.mat_ptr = _mat_ptr;

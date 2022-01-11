@@ -11,8 +11,11 @@ Vector3::Vector3(double x, double y, double z)
 void Vector3::set(double a, double b, double c)
 {
     _x = a;
+    _e[0] = a;
     _y = b;
+    _e[1] = b;
     _z = c;
+    _e[2] = c;
 }
 
 // get vec function

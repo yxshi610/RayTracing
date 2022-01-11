@@ -7,8 +7,8 @@
 class material;
 
 struct hit_record {
-    Vector3 P;
-    Vector3 N;
+    Vector3 point;
+    Vector3 normal;
     std::shared_ptr<material> mat_ptr;
     double t;
     double u;
@@ -17,7 +17,7 @@ struct hit_record {
 
     inline void set_face_normal(Ray r, Vector3 outward_normal) {
         front_face = dot(r.direction(), outward_normal) < 0;
-        N = front_face ? outward_normal : -outward_normal;
+        normal = front_face ? outward_normal : -outward_normal;
     }
 };
 

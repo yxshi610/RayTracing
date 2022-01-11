@@ -9,6 +9,7 @@ private:
     double _x;
     double _y;
     double _z;
+    double _e[3];
 
 public:
     Vector3(double x = 0, double y = 0, double z = 0);
@@ -16,6 +17,8 @@ public:
     double x();
     double y();
     double z();
+    double operator[](int i) const { return _e[i]; }
+    double& operator[](int i) { return _e[i]; }
 
     static Vector3 random();
     static Vector3 random(double min, double max);

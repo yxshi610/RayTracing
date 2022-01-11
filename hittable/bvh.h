@@ -42,16 +42,15 @@ inline bool box_compare(std::shared_ptr<hittable> a, std::shared_ptr<hittable> b
     }
 }
 
-
-bool box_x_compare (std::shared_ptr<hittable> a, std::shared_ptr<hittable> b) {
+inline bool box_x_compare (std::shared_ptr<hittable> a, std::shared_ptr<hittable> b) {
     return box_compare(a, b, 0);
 }
 
-bool box_y_compare (std::shared_ptr<hittable> a, std::shared_ptr<hittable> b) {
+inline bool box_y_compare (std::shared_ptr<hittable> a, std::shared_ptr<hittable> b) {
     return box_compare(a, b, 1);
 }
 
-bool box_z_compare (std::shared_ptr<hittable> a, std::shared_ptr<hittable> b) {
+inline bool box_z_compare (std::shared_ptr<hittable> a, std::shared_ptr<hittable> b) {
     return box_compare(a, b, 2);
 }
 
