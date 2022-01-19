@@ -1,18 +1,20 @@
 #ifndef RAY_H
 #define RAY_H
 
+#include "vector3d.h"
+
 class Ray {
 private:
-    Vector3 _origin;
-    Vector3 _direction;
-    double _time;
+    Vector3d origin_;
+    Vector3d direction_;
+    double time_;
 
 public:
     Ray();
-    Ray(Vector3 origin, Vector3 direction, double time = 0.0);
-    Vector3 origin();
-    Vector3 direction();
-    Vector3 at(double t);
+    Ray(Vector3d origin, Vector3d direction, double time = 0.0);
+    Vector3d origin();
+    Vector3d direction();
+    Vector3d At(double t);
     double time();
 };
 

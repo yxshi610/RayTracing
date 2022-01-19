@@ -1,25 +1,25 @@
 #include "rotate.h"
 
-YRotate::YRotate(std::shared_ptr<hittable> p, double angle) : _ptr(p) {
-    auto radians = degrees_to_radians(angle);
-    _sin_theta = sin(radians);
-    _cos_theta = cos(radians);
-    _hasbox = _ptr->bounding_box(0, 1, _bbox);
+YRotate::YRotate(std::shared_ptr<Hittable> p, double angle) : ptr_(p) {
+    auto radians = DegreesToRadians(angle);
+    sin_theta_ = sin(radians);
+    cos_theta_ = cos(radians);
+    hasbox_ = ptr_->BoundingBox(0, 1, bbox_);
 
-    double x = infinity, y = infinity, z = infinity;
-    double X = -infinity, Y = -infinity, Z = -infinity;
+    double x = kInfinity, y = kInfinity, z = kInfinity;
+    double X = -kInfinity, Y = -kInfinity, Z = -kInfinity;
 
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
             for (int k = 0; k < 2; k++) {
-                auto a = i * _bbox.max().x() + (1-i) * _bbox.min().x();
-                auto b = j * _bbox.max().y() + (1-j) * _bbox.min().y();
-                auto c = k * _bbox.max().z() + (1-k) * _bbox.min().z();
+                auto a = i * bbox_.max().x() + (1-i) * bbox_.min().x();
+                auto b = j * bbox_.max().y() + (1-j) * bbox_.min().y();
+                auto c = k * bbox_.max().z() + (1-k) * bbox_.min().z();
 
-                auto newx =  _cos_theta * a + _sin_theta * c;
-                auto newz = -_sin_theta * a + _cos_theta * c;
+                auto newx =  cos_theta_ * a + sin_theta_ * c;
+                auto newz = -sin_theta_ * a + cos_theta_ * c;
 
-                Vector3 tester(newx, b, newz);
+                Vector3d tester(newx, b, newz);
 
                 x = fmin(x, tester.x());
                 y = fmin(y, tester.y());
@@ -31,30 +31,30 @@ YRotate::YRotate(std::shared_ptr<hittable> p, double angle) : _ptr(p) {
         }
     }
 
-    _bbox = aabb(Vector3(x, y, z), Vector3(X, Y, Z));
+    bbox_ = AABB(Vector3d(x, y, z), Vector3d(X, Y, Z));
 }
 
 bool YRotate::hit(Ray r, double t_min, double t_max, hit_record& rec) {
     auto origin = r.origin();
     auto direction = r.direction();
 
-    auto originX = _cos_theta * r.origin().x() - _sin_theta * r.origin().z();
-    auto originZ = _sin_theta * r.origin().x() + _cos_theta * r.origin().z();
+    auto originX = cos_theta_ * r.origin().x() - sin_theta_ * r.origin().z();
+    auto originZ = sin_theta_ * r.origin().x() + cos_theta_ * r.origin().z();
 
-    auto directionX = _cos_theta * r.direction().x() - _sin_theta * r.direction().z();
-    auto directionZ = _sin_theta * r.direction().x() + _cos_theta * r.direction().z();
+    auto directionX = cos_theta_ * r.direction().x() - sin_theta_ * r.direction().z();
+    auto directionZ = sin_theta_ * r.direction().x() + cos_theta_ * r.direction().z();
 
-    Ray rotated_r(Vector3(originX, origin.y(), originZ), Vector3(directionX, direction.y(), directionZ), r.time());
+    Ray rotated_r(Vector3d(originX, origin.y(), originZ), Vector3d(directionX, direction.y(), directionZ), r.time());
 
-    if (!_ptr->hit(rotated_r, t_min, t_max, rec))
+    if (!ptr_->hit(rotated_r, t_min, t_max, rec))
         return false;
 
     auto p = rec.point;
     auto normal = rec.normal;
 
-    p.set(-_cos_theta * rec.point.x() + _sin_theta * rec.point.z(), p.y(), -_sin_theta * rec.point.x() + _cos_theta * rec.point.z());
+    p.set(-cos_theta_ * rec.point.x() + sin_theta_ * rec.point.z(), p.y(), -sin_theta_ * rec.point.x() + cos_theta_ * rec.point.z());
 
-    normal.set(_cos_theta * rec.normal.x() + _sin_theta * rec.normal.z(), normal.y(), -_sin_theta * rec.normal.x() + _cos_theta * rec.normal.z());
+    normal.set(cos_theta_ * rec.normal.x() + sin_theta_ * rec.normal.z(), normal.y(), -sin_theta_ * rec.normal.x() + cos_theta_ * rec.normal.z());
 
     rec.point = p;
     rec.set_face_normal(rotated_r, normal);

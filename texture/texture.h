@@ -1,11 +1,11 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include "../main.h"
+#include "../common.h"
 
-class texture {
+class Texture {
     public:
-        virtual Vector3 value(double u, double v, Vector3 P) = 0;
+        virtual Vector3d value(double u, double v, Vector3d P) = 0;
 };
 
 #endif

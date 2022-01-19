@@ -1,24 +1,24 @@
 #include "perlin.h"
 
-perlin::perlin() {
-    ranvec = new Vector3[point_count];
+Perlin::Perlin() {
+    ranvec = new Vector3d[point_count];
     for (int i = 0; i < point_count; ++i) {
-        ranvec[i] = Vector3::random(-1, 1).unit();
+        ranvec[i] = UnitVector(Vector3d::Random(-1, 1));
     }
 
-    perm_x = perlin_generate_perm();
-    perm_y = perlin_generate_perm();
-    perm_z = perlin_generate_perm();
+    perm_x = PerlinGeneratePerm();
+    perm_y = PerlinGeneratePerm();
+    perm_z = PerlinGeneratePerm();
 }
 
-perlin::~perlin() {
+Perlin::~Perlin() {
     delete[] ranvec;
     delete[] perm_x;
     delete[] perm_y;
     delete[] perm_z;
 }
 
-double perlin::noise(Vector3 p) {
+double Perlin::Noise(Vector3d p) {
     auto u = p.x() - floor(p.x());
     auto v = p.y() - floor(p.y());
     auto w = p.z() - floor(p.z());
@@ -27,7 +27,7 @@ double perlin::noise(Vector3 p) {
     auto j = static_cast<int>(floor(p.y()));
     auto k = static_cast<int>(floor(p.z()));
 
-    Vector3 c[2][2][2];
+    Vector3d c[2][2][2];
     for (int di=0; di < 2; di++)
         for (int dj=0; dj < 2; dj++)
             for (int dk=0; dk < 2; dk++)
@@ -37,10 +37,10 @@ double perlin::noise(Vector3 p) {
                     perm_z[(k+dk) & 255]
                 ];
 
-    return perlin_interp(c, u, v, w);
+    return PerlinInterpolation(c, u, v, w);
 }
 
-double perlin::perlin_interp(Vector3 c[2][2][2], double u, double v, double w) {
+double Perlin::PerlinInterpolation(Vector3d c[2][2][2], double u, double v, double w) {
     auto uu = u*u*(3-2*u);
     auto vv = v*v*(3-2*v);
     auto ww = w*w*(3-2*w);
@@ -49,16 +49,16 @@ double perlin::perlin_interp(Vector3 c[2][2][2], double u, double v, double w) {
     for (int i=0; i < 2; i++)
         for (int j=0; j < 2; j++)
             for (int k=0; k < 2; k++) {
-                Vector3 weight_v(u-i, v-j, w-k);
+                Vector3d weight_v(u-i, v-j, w-k);
                 accum += (i*uu + (1-i)*(1-uu))
                         * (j*vv + (1-j)*(1-vv))
                         * (k*ww + (1-k)*(1-ww))
-                        * dot(c[i][j][k], weight_v);
+                        * Dot(c[i][j][k], weight_v);
                 }
             return accum;
 }
 
-double perlin::trilinear_interp(double c[2][2][2], double u, double v, double w) {
+double Perlin::TrilinearInterpolation(double c[2][2][2], double u, double v, double w) {
     auto accum = 0.0;
         for (int i=0; i < 2; i++)
             for (int j=0; j < 2; j++)
@@ -69,32 +69,32 @@ double perlin::trilinear_interp(double c[2][2][2], double u, double v, double w)
         return accum;
 }
 
-int* perlin::perlin_generate_perm() {
+int* Perlin::PerlinGeneratePerm() {
     auto p = new int[point_count];
 
-    for (int i = 0; i < perlin::point_count; i++) p[i] = i;
+    for (int i = 0; i < Perlin::point_count; i++) p[i] = i;
 
-    permute(p, point_count);
+    Permute(p, point_count);
 
     return p;
 }
 
-void perlin::permute(int* p, int n) {
+void Perlin::Permute(int* p, int n) {
     for (int i = n-1; i > 0; i--) {
-        int target = random_int(0, i);
+        int target = RandomInt(0, i);
         int tmp = p[i];
         p[i] = p[target];
         p[target] = tmp;
     }
 }
 
-double perlin::turb(Vector3 p, int depth) {
+double Perlin::Turb(Vector3d p, int depth) {
     auto accum = 0.0;
     auto temp_p = p;
     auto weight = 1.0;
 
     for (int i = 0; i < depth; i++) {
-        accum += weight*noise(temp_p);
+        accum += weight*Noise(temp_p);
         weight *= 0.5;
         temp_p *= 2;
     }

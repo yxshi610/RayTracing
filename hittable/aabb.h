@@ -1,23 +1,23 @@
-#ifndef AABB_H
-#define AABB_H
+#ifndef  AABB_H
+#define  AABB_H
 
-#include "../main.h"
+#include "../common.h"
 
-class aabb {
+class  AABB {
     private:
-        Vector3 _minimum;
-        Vector3 _maximum;
+        Vector3d minimum_;
+        Vector3d maximum_;
 
     public:
-        aabb();
-        aabb(Vector3 minimum, Vector3 maximum);
+        AABB();
+        AABB(Vector3d minimum, Vector3d maximum);
 
-        Vector3 min();
-        Vector3 max();
+        Vector3d min();
+        Vector3d max();
 
         bool hit(Ray r, double t_min, double t_max);
 };
 
-aabb surrounding_box(aabb box0, aabb box1);
+ AABB SurroundingBox(AABB box0,  AABB box1);
 
 #endif

@@ -1,13 +1,13 @@
 #include "solid_color.h"
 
-solid_color::solid_color() {}
-solid_color::solid_color(Vector3 color) {
-    _color_value = color;
+SolidColor::SolidColor() {}
+SolidColor::SolidColor(Vector3d color) {
+    color_ = color;
 }
-solid_color::solid_color(double red, double green, double blue) {
-    solid_color(Vector3(red, green, blue));
+SolidColor::SolidColor(double red, double green, double blue) {
+    SolidColor(Vector3d(red, green, blue));
 }
 
-Vector3 solid_color::value(double u, double v, Vector3 P) {
-    return _color_value;
+Vector3d SolidColor::value(double u, double v, Vector3d P) {
+    return color_;
 }

@@ -1,27 +1,27 @@
 #ifndef HITTABLE_LIST_H
 #define HITTABLE_LIST_H
 
-#include "../main.h"
 #include "hittable.h"
+#include "../ray.h"
 #include "aabb.h"
 #include <vector>
 #include <memory>
 
-class hittable_list : public hittable {
+class HittableList : public Hittable {
 private:
-    std::vector<std::shared_ptr<hittable>> _objects;
+    std::vector<std::shared_ptr<Hittable>> objects_;
 
 public:
-    hittable_list();
-    hittable_list(std::shared_ptr<hittable> object);
+    HittableList();
+    HittableList(std::shared_ptr<Hittable> object);
 
-    std::vector<std::shared_ptr<hittable>> objects();
+    std::vector<std::shared_ptr<Hittable>> objects();
 
-    void add(std::shared_ptr<hittable> object);
+    void add(std::shared_ptr<Hittable> object);
     void clear();
 
     bool hit(Ray r, double t_min, double t_max, hit_record& rec);
-    bool bounding_box(double time0, double time1, aabb& output_box);
+    bool BoundingBox(double time0, double time1, AABB& output_box);
 };
 
 #endif

@@ -1,25 +1,25 @@
 #ifndef MOVING_SPHERE_H
 #define MOVING_SPHERE_H
 
-#include "../main.h"
+#include "../common.h"
 #include "./hittable.h"
-#include "./aabb.h"
+#include "aabb.h"
 
-class moving_sphere : public hittable {
+class MovingSphere : public Hittable {
     private:
-        Vector3 _center0, _center1;
-        double _time0, _time1;
-        double _radius;
-        std::shared_ptr<material> _mat_ptr;
+        Vector3d center0_, center1_;
+        double time0_, time1_;
+        double radius_;
+        std::shared_ptr<Material> material_ptr_;
 
     public:
-        moving_sphere();
-        moving_sphere(Vector3 center0, Vector3 center1, double time0, double time1, double radius, std::shared_ptr<material> m);
+        MovingSphere();
+        MovingSphere(Vector3d center0, Vector3d center1, double time0, double time1, double radius, std::shared_ptr<Material> mateiral_ptr);
 
-        Vector3 center(double time);
+        Vector3d center(double time);
 
         bool hit(Ray r, double t_min, double t_max, hit_record& rec);
-        bool bounding_box(double _time0, double _time1, aabb& output_box);
+        bool BoundingBox(double _time0, double _time1, AABB& output_box);
 };
 
 #endif

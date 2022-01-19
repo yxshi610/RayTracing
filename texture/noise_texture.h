@@ -4,17 +4,17 @@
 #include "perlin.h"
 #include "texture.h"
 
-class noise_texture : public texture {
+class NoiseTexture : public Texture {
     private:
-        perlin noise;
-        double _scale;
+        Perlin noise_;
+        double scale_;
     
     public:
-        noise_texture() {};
-        noise_texture(double scale) :_scale(scale) {}
+        NoiseTexture() {};
+        NoiseTexture(double scale) :scale_(scale) {}
 
-        virtual Vector3 value(double u, double v, Vector3 p) override {
-            return Vector3(1, 1, 1) * 0.5 * (1 + sin(_scale*p.z() + 10*noise.turb(p)));
+        virtual Vector3d value(double u, double v, Vector3d p) override {
+            return Vector3d(1, 1, 1) * 0.5 * (1 + sin(scale_*p.z() + 10*noise_.Turb(p)));
         }
 };
 

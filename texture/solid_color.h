@@ -3,16 +3,16 @@
 
 #include "texture.h"
 
-class solid_color : public texture {
+class SolidColor : public Texture {
     private:
-        Vector3 _color_value;
+        Vector3d color_;
 
     public:
-        solid_color();
-        solid_color(Vector3 color);
-        solid_color(double red, double green, double blue);
+        SolidColor();
+        SolidColor(Vector3d color);
+        SolidColor(double red, double green, double blue);
 
-        Vector3 value(double u, double v, Vector3 P) override;
+        Vector3d value(double u, double v, Vector3d P);
 };
 
 #endif

@@ -1,23 +1,23 @@
 #ifndef BOX_H
 #define BOX_H
 
-#include "../main.h"
+#include "../common.h"
 #include "hittable_list.h"
 
-class box : public hittable {
+class Box : public Hittable {
     private:
-        Vector3 _box_min;
-        Vector3 _box_max;
-        hittable_list _sides;
+        Vector3d box_min_;
+        Vector3d box_max_;
+        HittableList sides_;
     
     public:
-        box() {}
-        box(Vector3 p0, Vector3 p1, std::shared_ptr<material> ptr);
+        Box() {}
+        Box(Vector3d p0, Vector3d p1, std::shared_ptr<Material> ptr);
 
         virtual bool hit(Ray r, double t_min, double t_max, hit_record& rec) override;
 
-        virtual bool bounding_box(double time0, double time1, aabb& output_box) override {
-            output_box = aabb(_box_min, _box_max);
+        virtual bool BoundingBox(double time0, double time1, AABB& output_box) override {
+            output_box = AABB(box_min_, box_max_);
             return true;
         }
 };

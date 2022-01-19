@@ -1,38 +1,38 @@
 #include "image_texture.h"
 // TODO: why can not move this to image_texture.h
-#include "main_stb_image.h"
+#include "use_stb_image.h"
 
-ImageTexture::ImageTexture(): _data(nullptr), _width(0), _height(0), _bytes_per_scanline(0) {}
+ImageTexture::ImageTexture(): data_(nullptr), width_(0), height_(0), bytes_per_scanline_(0) {}
 ImageTexture::ImageTexture(const char* filename) {
-    auto components_per_pixel = _bytes_per_scanline;
-    _data = stbi_load(filename, &_width, &_height, &components_per_pixel, components_per_pixel);
-    if (!_data) {
+    auto components_per_pixel = bytes_per_scanline_;
+    data_ = stbi_load(filename, &width_, &height_, &components_per_pixel, components_per_pixel);
+    if (!data_) {
         std::cerr << "ERROR: Could not load texture image file '" << filename << "'.\n";
-        _width = _height = 0; 
+        width_ = height_ = 0; 
     }
-    _bytes_per_scanline = bytes_per_pixel * _width;
+    bytes_per_scanline_ = bytes_per_pixel * width_;
 }
 ImageTexture::~ImageTexture(){
-    delete _data;
+    delete data_;
 }
 
-Vector3 ImageTexture::value(double u, double v, Vector3 p) {
+Vector3d ImageTexture::value(double u, double v, Vector3d p) {
     // if no texture data.
-    if (_data == nullptr) return Vector3(0, 1, 1);
+    if (data_ == nullptr) return Vector3d(0, 1, 1);
 
     // clamp input texture coordinates to [0, 1] * [0, 1]
-    u = clamp(u, 0.0, 1.0);
-    v = 1.0 - clamp(v, 0.0, 1.0);
+    u = Clamp(u, 0.0, 1.0);
+    v = 1.0 - Clamp(v, 0.0, 1.0);
 
-    auto i = static_cast<int>(u * _width);
-    auto j = static_cast<int>(v * _height);
+    auto i = static_cast<int>(u * width_);
+    auto j = static_cast<int>(v * height_);
 
     // clamp integer mapping, actual coor should be less than 1.0
-    if (i >= _width) i = _width - 1;
-    if (j >= _height) j = _height - 1;
+    if (i >= width_) i = width_ - 1;
+    if (j >= height_) j = height_ - 1;
 
     const auto color_scale = 1.0 / 255.0;
-    auto pixel = _data + j * _bytes_per_scanline + i * bytes_per_pixel;
+    auto pixel = data_ + j * bytes_per_scanline_ + i * bytes_per_pixel;
 
-    return Vector3(color_scale * pixel[0], color_scale * pixel[1], color_scale * pixel[2]);
+    return Vector3d(color_scale * pixel[0], color_scale * pixel[1], color_scale * pixel[2]);
 }

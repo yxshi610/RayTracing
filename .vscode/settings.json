@@ -1,6 +1,6 @@
 {
     "code-runner.executorMap": {
-      "cpp": "g++ $fullFileName Vector3.cpp Ray.cpp ./hittable/sphere.cpp ./hittable/moving_sphere.cpp ./hittable/hittable.cpp ./hittable/hittable_list.cpp ./hittable/bvh.cpp ./hittable/aabb.cpp ./texture/solid_color.cpp ./texture/checker_texture.cpp ./texture/perlin.cpp ./texture/image_texture.cpp camera.cpp ./hittable/aa_rectangle.cpp ./hittable/box.cpp ./hittable/translate.cpp ./hittable/rotate.cpp ./hittable/constant_medium.cpp -o $dir\"$fileNameWithoutExt\"\".out\" -W -Wall -O2 -std=c++17 && $dir\"$fileNameWithoutExt\"\".out\" > try.ppm",
+      "cpp": "g++ $fullFileName vector3d.cpp ray.cpp hittable/hittable_list.cpp hittable/sphere.cpp camera.cpp hittable/moving_sphere.cpp texture/solid_color.cpp texture/checker_texture.cpp hittable/aabb.cpp hittable/bvh_node.cpp texture/perlin.cpp texture/image_texture.cpp hittable/aa_rectangle.cpp hittable/box.cpp hittable/translate.cpp hittable/rotate.cpp hittable/constant_medium.cpp -o $dir\"$fileNameWithoutExt\"\".out\" -W -Wall -O2 -std=c++20 && $dir\"$fileNameWithoutExt\"\".out\" > try.ppm",
       // 其中 $fullFileName 是绝对路径，是主文件
       /* ------ 编译、运行多个cpp文件 ------ */
       // "cpp": "g++ $fullFileName <file_to_link> -o $dir\"$fileNameWithoutExt\"\".out\" -W -Wall -O2 -std=c++17 && $dir\"$fileNameWithoutExt\"\".out\""

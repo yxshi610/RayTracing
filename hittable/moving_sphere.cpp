@@ -1,24 +1,24 @@
 #include "moving_sphere.h"
 
-moving_sphere::moving_sphere(){}
-moving_sphere::moving_sphere(Vector3 center0, Vector3 center1, double time0, double time1, double radius, std::shared_ptr<material> m) {
-    _center0 = center0;
-    _center1 = center1;
-    _time0 = time0;
-    _time1 = time1;
-    _radius = radius;
-    _mat_ptr = m;
+MovingSphere::MovingSphere(){}
+MovingSphere::MovingSphere(Vector3d center0, Vector3d center1, double time0, double time1, double radius, std::shared_ptr<Material> material_ptr) {
+    center0_ = center0;
+    center1_ = center1;
+    time0_ = time0;
+    time1_ = time1;
+    radius_ = radius;
+    material_ptr_ = material_ptr;
 }
 
-Vector3 moving_sphere::center(double time) {
-    return _center0 + ((time - _time0) / (_time1 - _time0))*(_center1 - _center0);
+Vector3d MovingSphere::center(double time) {
+    return center0_ + ((time - time0_) / (time1_ - time0_))*(center1_ - center0_);
 }
 
-bool moving_sphere::hit(Ray r, double t_min, double t_max, hit_record &rec) {
-    Vector3 oc = r.origin() - center(r.time());
-    auto a = r.direction().length_squared();
-    auto half_b = dot(oc, r.direction());
-    auto c = oc.length_squared() - _radius*_radius;
+bool MovingSphere::hit(Ray r, double t_min, double t_max, hit_record &rec) {
+    Vector3d oc = r.origin() - center(r.time());
+    auto a = r.direction().LengthSquared();
+    auto half_b = Dot(oc, r.direction());
+    auto c = oc.LengthSquared() - radius_ * radius_;
 
     auto discriminant = half_b*half_b - a*c;
     if (discriminant < 0) return false;
@@ -33,21 +33,21 @@ bool moving_sphere::hit(Ray r, double t_min, double t_max, hit_record &rec) {
     }
 
     rec.t = root;
-    rec.point = r.at(rec.t);
-    auto outward_normal = (rec.point - center(r.time())) / _radius;
+    rec.point = r.At(rec.t);
+    auto outward_normal = (rec.point - center(r.time())) / radius_;
     rec.set_face_normal(r, outward_normal);
-    rec.mat_ptr = _mat_ptr;
+    rec.material_ptr = material_ptr_;
 
     return true;
 }
 
-bool moving_sphere::bounding_box(double _time0, double _time1, aabb& output_box) {
-    aabb box0(
-        center(_time0) - Vector3(_radius, _radius, _radius),
-        center(_time0) + Vector3(_radius, _radius, _radius));
-    aabb box1(
-        center(_time1) - Vector3(_radius, _radius, _radius),
-        center(_time1) + Vector3(_radius, _radius, _radius));
-    output_box = surrounding_box(box0, box1);
+bool MovingSphere::BoundingBox(double time0, double time1, AABB& output_box) {
+    AABB box0(
+        center(time0) - Vector3d(radius_, radius_, radius_),
+        center(time0) + Vector3d(radius_, radius_, radius_));
+    AABB box1(
+        center(time1) - Vector3d(radius_, radius_, radius_),
+        center(time1) + Vector3d(radius_, radius_, radius_));
+    output_box = SurroundingBox(box0, box1);
     return true;
 }

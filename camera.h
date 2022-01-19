@@ -1,20 +1,21 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "main.h"
+#include "common.h"
 
-class camera {
+class Camera {
 private:
-    Vector3 _origin;
-    Vector3 _lower_left_corner;
-    Vector3 _horizontal;
-    Vector3 _vertical;
-    Vector3 _u, _v, _w;
-    double _lens_radius;
-    double _time0, _time1;
+    Vector3d origin_;
+    Vector3d lower_left_corner_;
+    Vector3d horizontal_;
+    Vector3d vertical_;
+    Vector3d u_, v_, w_;
+    double lens_radius_;
+    double time0_, time1_;
 
 public:
-    camera(Vector3 lookfrom, Vector3 lookat, Vector3 vup, double vfov, double aspect_ratio, double aperture, double focus_dist, double time0 = 0, double time1 = 0);
+Camera();
+    Camera(Vector3d lookfrom, Vector3d lookat, Vector3d vup, double vfov, double aspect_ratio, double aperture, double focus_dist, double time0 = 0, double time1 = 0);
     Ray get_ray(double s, double t);
 };
 

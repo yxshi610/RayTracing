@@ -1,25 +1,25 @@
-#include "main.h"
+#include "ray.h"
 
 Ray::Ray() {}
 
-Ray::Ray(Vector3 origin, Vector3 direction, double time) {
-    _origin = origin;
-    _direction = direction;
-    _time = time;
+Ray::Ray(Vector3d origin, Vector3d direction, double time) {
+    origin_ = origin;
+    direction_ = direction;
+    time_ = time;
 }
 
-Vector3 Ray::origin() {
-    return _origin;
+Vector3d Ray::origin() {
+    return origin_;
 }
 
-Vector3 Ray::direction() {
-    return _direction;
+Vector3d Ray::direction() {
+    return direction_;
 }
 
-Vector3 Ray::at(double t) {
-    return _origin + t * _direction;
+Vector3d Ray::At(double t) {
+    return origin_ + t * direction_;
 }
 
 double Ray::time() {
-    return _time;
+    return time_;
 }
